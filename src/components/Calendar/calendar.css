@@ -1,0 +1,100 @@
+/* Define a shared consistent width */
+:root {
+  --calendar-column-width: 160px;
+}
+
+/* =================== Time Slots (Hour Rows) =================== */
+
+/* Control height of each time slot row */
+.rbc-time-content > .rbc-time-gutter,
+.rbc-time-content > .rbc-day-slot {
+  min-height: 1000px;
+}
+
+/* =================== Time Gutter (Left Time Column) =================== */
+.rbc-time-gutter {
+  width: 50px !important;
+  text-align: right;
+  padding-right: 6px;
+  font-size: 0.75rem;
+  color: #444;
+}
+
+/* =================== Day Columns =================== */
+.rbc-day-slot {
+  min-width: var(--calendar-column-width) !important;
+  max-width: var(--calendar-column-width);
+}
+
+/* Optional: allow horizontal scrolling if screen is small */
+.rbc-time-view {
+  overflow-x: auto;
+}
+
+/* =================== Weekday Header =================== */
+.rbc-time-header {
+  min-height: 60px;
+  background-color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+}
+
+/* Make sure header container aligns properly */
+.rbc-time-header-content {
+  display: flex;
+}
+
+.rbc-time-header-cell {
+  background-color: #f6fcff;
+  height: 100%;
+}
+
+/* Style each day name cell */
+.rbc-time-header-content > .rbc-row .rbc-header {
+  min-width: var(--calendar-column-width) !important;
+  max-width: var(--calendar-column-width);
+  padding: 12px 8px;
+}
+
+.rbc-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.rbc-header span {
+  fcolor: var(--Light-Theme-Rest-Foreground-Default-Foreground-2, #616161);
+  font-family: GilroyMedium;
+  font-size: 1.25rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.55975rem;
+}
+
+/* =================== General Event Cell Alignment =================== */
+.rbc-event-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  white-space: pre-line;
+}
+
+/* Prevent layout breaks */
+.rbc-row-content {
+  overflow: hidden;
+}
+
+/* =================== Remove All-Day Row =================== */
+.rbc-allday-cell {
+  display: none !important;
+}
+.rbc-time-header .rbc-allday-cell + .rbc-row {
+  display: none !important;
+}
+
+.rbc-time-content .rbc-time-slot:nth-of-type(1n) {
+  border: 1px solid rgb(255, 255, 255);
+}

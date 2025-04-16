@@ -1,0 +1,33 @@
+* {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+  font-family: GilroySemibold;
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  padding-top: 20px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.campaigns {
+  padding: 20px;
+}
+
+.campaigns-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.campaign-heading {
+  color: var(--grey-500, #4e4e55);
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.03rem;
+  margin-bottom: 10px;
+}

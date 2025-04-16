@@ -1,0 +1,11 @@
+
+.campaign-card-box {
+  height: 15rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0.1px solid rgb(197, 197, 197);
+  position: relative;
+}
+
+

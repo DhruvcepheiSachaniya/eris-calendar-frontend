@@ -1,0 +1,32 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 16.25rem;
+  border-radius: 0.625rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  border: 1px solid #e7eaee;
+  background: #fff;
+  box-shadow: 2px 2px 14px 0px rgba(136, 136, 136, 0.2);
+}
+
+.card-heading {
+  color: #455a64;
+  text-align: center;
+  font-family: GilroySemiBold;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.0225rem;
+}
+
+.card-value {
+  color: #455a64;
+  text-align: center;
+  font-family: GilroySemiBold;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.035rem;
+}
