@@ -15,7 +15,8 @@ import { Popover, Button, Box, Typography, Divider } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import "./calendar.css";
-import SessionModal from "../Session Popup/Session";
+import SessionModal from "../Schedule Session Popup/Session";
+import StartSession from "../Start Session Popup/StartSession";
 
 const locales = {
   "en-US": enUS,
@@ -54,13 +55,20 @@ const eventStyleGetter = () => ({
   },
 });
 
-const BigCalendar = () => {
+const BigCalendar = ({ campaignDetails, setRefreshTrigger }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [openSessionModal, setOpenSessionModal] = useState(false);
+  const [openStartSessionModal, setOpenStartSessionModal] = useState(false);
+  const [eventDetails, setEventDetails] = useState({});
+  const [isEdit, setIsEdit] = useState(false);
 
-  const handleClose = () => {
+  const handleCloseSessionModal = () => {
     setOpenSessionModal(false);
+  };
+
+  const handleCloseStartSessionModal = () => {
+    setOpenStartSessionModal(false);
   };
 
   const handleCalendarClick = (event) => {
@@ -74,6 +82,18 @@ const BigCalendar = () => {
   };
 
   const open = Boolean(anchorEl);
+
+  const events = campaignDetails.data.sessions.map((session) => ({
+    id: session.id,
+    title: `${session.dr_code}\n${session.dr_speciality}`,
+    start: new Date(session.start_time),
+    end: new Date(session.end_time),
+  }));
+
+  const handleEvent = (event) => {
+    setOpenStartSessionModal(true);
+    setEventDetails(event);
+  };
 
   return (
     <div style={{ padding: "1rem", fontFamily: "GilroySemibold, sans-serif" }}>
@@ -122,7 +142,10 @@ const BigCalendar = () => {
               backgroundColor: "#1f5dc2",
             },
           }}
-          onClick={() => setOpenSessionModal(true)}
+          onClick={() => {
+            setIsEdit(false);
+            setOpenSessionModal(true);
+          }}
         >
           + Schedule Session
         </Button>
@@ -130,6 +153,7 @@ const BigCalendar = () => {
 
       <div style={{ height: "80vh" }}>
         <Calendar
+          onSelectEvent={(event) => handleEvent(event)}
           localizer={localizer}
           events={events}
           startAccessor="start"
@@ -145,8 +169,8 @@ const BigCalendar = () => {
             eventTimeRangeFormat: () => "",
             timeGutterFormat: (date) => format(date, "HH:mm"),
           }}
-          min={setHours(startOfDay(new Date()), 8)}
-          max={setHours(startOfDay(new Date()), 18)}
+          min={setHours(startOfDay(new Date()), 6)}
+          max={setHours(startOfDay(new Date()), 23)}
           components={{
             toolbar: () => null,
             event: ({ event }) => {
@@ -179,7 +203,21 @@ const BigCalendar = () => {
           eventPropGetter={eventStyleGetter}
         />
       </div>
-      <SessionModal open={openSessionModal} handleClose={handleClose} />
+      <SessionModal
+        open={openSessionModal}
+        handleClose={handleCloseSessionModal}
+        setRefreshTrigger={setRefreshTrigger}
+        eventDetails={eventDetails}
+        isEdit={isEdit}
+      />
+      <StartSession
+        open={openStartSessionModal}
+        handleClose={handleCloseStartSessionModal}
+        eventDetails={eventDetails}
+        setOpenSessionModal={setOpenSessionModal}
+        setOpenStartSessionModal={setOpenStartSessionModal}
+        setIsEdit={setIsEdit}
+      />
     </div>
   );
 };

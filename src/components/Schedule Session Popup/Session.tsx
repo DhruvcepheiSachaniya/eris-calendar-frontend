@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { addSession } from "../../../../eris-calendar-frontend/api.js";
+import React, { useState, useEffect } from "react";
+import { addSession, editSession } from "../../../api.js";
 import {
   Modal,
   Box,
@@ -10,8 +10,18 @@ import {
   IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { CircularProgress } from "@mui/material";
+import { toast } from "react-toastify";
+import { format } from "date-fns";
 
-const Session = ({ open, handleClose }) => {
+const Session = ({
+  open,
+  handleClose,
+  setRefreshTrigger,
+  eventDetails,
+  isEdit,
+}) => {
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [formData, setFormData] = useState({
     doctor: "",
     date: "",
@@ -19,10 +29,6 @@ const Session = ({ open, handleClose }) => {
     endTime: "",
     reason: "",
   });
-
-  console.log("date: ", formData.date);
-  console.log("starttime: ", formData.startTime);
-  console.log("endtime: ", formData.endTime);
 
   const handleChange = (field) => (event) => {
     setFormData((prev) => ({
@@ -33,19 +39,17 @@ const Session = ({ open, handleClose }) => {
 
   const handleSaveSession = async () => {
     try {
+      setIsButtonLoading(true);
       const { date, startTime, endTime, doctor, reason } = formData;
-
-      const localDate = new Date(date); 
+      const localDate = new Date(date);
       const [startHours, startMinutes] = startTime.split(":");
       const [endHours, endMinutes] = endTime.split(":");
-
       const start = new Date(localDate);
       start.setHours(Number(startHours), Number(startMinutes), 0);
-
       const end = new Date(localDate);
       end.setHours(Number(endHours), Number(endMinutes), 0);
 
-      await addSession({
+      const response = await addSession({
         date: new Date().toISOString(),
         startTime: start.toISOString(),
         endTime: end.toISOString(),
@@ -54,12 +58,64 @@ const Session = ({ open, handleClose }) => {
         drspeciality: "Cardiology",
         empCode: "E00874",
       });
-
-      handleClose();
+      if (response.status) {
+        toast.success("Session Scheduled Successfully");
+        handleClose();
+        setRefreshTrigger((prev) => prev + 1);
+      } else {
+        throw new Error(response.message);
+      }
     } catch (error) {
-      console.error("Failed to save session:", error);
+      toast.error(error.message || "Something went wrong");
+    } finally {
+      setIsButtonLoading(false);
     }
   };
+
+  const handleEditSession = async () => {
+    try {
+      setIsButtonLoading(true);
+      const { date, startTime, endTime, doctor, reason } = formData;
+      const localDate = new Date(date);
+      const [startHours, startMinutes] = startTime.split(":");
+      const [endHours, endMinutes] = endTime.split(":");
+      const start = new Date(localDate);
+      start.setHours(Number(startHours), Number(startMinutes), 0);
+      const end = new Date(localDate);
+      end.setHours(Number(endHours), Number(endMinutes), 0);
+
+      const response = await editSession({
+        sessionId: eventDetails.id,
+        date: new Date().toISOString(),
+        startTime: start.toISOString(),
+        endTime: end.toISOString(),
+        select_reason: formData.reason,
+      });
+      if (response.status) {
+        toast.success("Session Edited Successfully");
+        handleClose();
+        setRefreshTrigger((prev) => prev + 1);
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      toast.error(error.message || "Something went wrong");
+    } finally {
+      setIsButtonLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isEdit) {
+      setFormData({
+        doctor: eventDetails.title.split,
+        date: format(new Date(eventDetails.start), "yyyy-MM-dd"),
+        startTime: format(new Date(eventDetails.start), "HH:mm"),
+        endTime: format(new Date(eventDetails.end), "HH:mm"),
+        reason: "",
+      });
+    }
+  }, [isEdit]);
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -84,7 +140,7 @@ const Session = ({ open, handleClose }) => {
               lineHeight: "1.375rem",
             }}
           >
-            Schedule New Session
+            {isEdit ? "Edit Session" : "Schedule New Session"}
           </Typography>
           <IconButton onClick={handleClose}>
             <CloseIcon />
@@ -154,6 +210,7 @@ const Session = ({ open, handleClose }) => {
             <TextField
               fullWidth
               type="date"
+              inputProps={{ min: today }}
               value={formData.date}
               onChange={handleChange("date")}
               InputLabelProps={{ shrink: true }}
@@ -230,6 +287,9 @@ const Session = ({ open, handleClose }) => {
               End Time
             </Typography>
             <TextField
+              inputProps={{
+                min: formData.startTime || "00:00", // disables times before startTime
+              }}
               fullWidth
               type="time"
               value={formData.endTime}
@@ -309,17 +369,19 @@ const Session = ({ open, handleClose }) => {
             Cancel
           </Button>
           <Button
-            onClick={handleSaveSession}
+            onClick={isEdit ? handleEditSession : handleSaveSession}
             variant="contained"
             sx={{ backgroundColor: "#2B72E6", color: "#FFF" }}
           >
-            Save Session
+            {isButtonLoading ? <CircularProgress /> : "Save Session"}
           </Button>
         </Box>
       </Box>
     </Modal>
   );
 };
+
+const today = new Date().toISOString().split("T")[0]; // e.g. '2025-04-16'
 
 const style = {
   position: "absolute",

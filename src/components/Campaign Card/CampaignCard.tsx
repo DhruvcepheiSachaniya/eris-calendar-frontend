@@ -1,11 +1,14 @@
 import { Button } from "@mui/material";
 import "./campaign-card.css";
+import { useNavigate } from "react-router-dom";
 
-const CampaignCard = () => {
+const CampaignCard = ({ campaignName, campaignImage, campaignId }) => {
+  const navigate = useNavigate();
   return (
     <div className="campaign-card-box">
-      <div className="campaign-image-box">Campaign 1 Image</div>
+      <img src={campaignImage} alt="" />
       <Button
+        onClick={() => navigate(`/campaign?campaignId=${campaignId}`)}
         variant="contained"
         sx={{
           fontFamily: "GilroySemibold",

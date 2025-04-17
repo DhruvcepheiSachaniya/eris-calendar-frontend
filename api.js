@@ -1,15 +1,14 @@
 import axiosInstance from "./axiosInstance";
 
-
 export const addSession = async (sessionData) => {
   try {
     const response = await axiosInstance.post("/session/add", sessionData);
     return response.data;
+
   } catch (error) {
     return handleApiError(error);
   }
 };
-
 
 export const startSession = async (sessionid) => {
   try {
@@ -22,7 +21,6 @@ export const startSession = async (sessionid) => {
   }
 };
 
-
 export const editSession = async (editData) => {
   try {
     const response = await axiosInstance.put("/session/edit", editData);
@@ -31,7 +29,6 @@ export const editSession = async (editData) => {
     return handleApiError(error);
   }
 };
-
 
 export const getSessionEndDetails = async (sessionid) => {
   try {
@@ -44,7 +41,6 @@ export const getSessionEndDetails = async (sessionid) => {
   }
 };
 
-
 export const endSession = async (endData) => {
   try {
     const response = await axiosInstance.post("/session/end", endData);
@@ -53,7 +49,6 @@ export const endSession = async (endData) => {
     return handleApiError(error);
   }
 };
-
 
 export const getPatientCount = async (sessionid) => {
   try {
@@ -66,6 +61,28 @@ export const getPatientCount = async (sessionid) => {
   }
 };
 
+export const getCampaignList = async () => {
+  try {
+    const response = await axiosInstance.get("/campaign/list");
+    return response.data;
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const getCampaignDetails = async (campaignId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/campaign/details?campaignid=${campaignId}`
+    );
+    
+
+    return response.data;
+  } catch (error) {
+    
+    return handleApiError(error);
+  }
+};
 
 const handleApiError = (error) => {
   console.error("API Error:", error);

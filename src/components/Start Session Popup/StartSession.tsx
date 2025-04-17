@@ -1,0 +1,148 @@
+import React, { useState } from "react";
+import { addSession } from "../../../api.js";
+import {
+  Modal,
+  Box,
+  Typography,
+  TextField,
+  MenuItem,
+  Button,
+  IconButton,
+  Card,
+  CardContent,
+  Stack,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PersonIcon from "@mui/icons-material/Person";
+import TextFieldsIcon from "@mui/icons-material/TextFields";
+import { CircularProgress } from "@mui/material";
+import { toast } from "react-toastify";
+import { format } from "date-fns";
+
+const StartSession = ({
+  open,
+  handleClose,
+  eventDetails,
+  setOpenSessionModal,
+  setOpenStartSessionModal,
+  setIsEdit,
+}) => {
+  return (
+    <Modal open={open}>
+      <Box sx={style}>
+        <IconButton
+          sx={{ position: "absolute", top: 8, right: 8 }}
+          size="small"
+          onClick={handleClose}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          sx={{
+            color: "#000",
+            fontFamily: "GilroySemiBold",
+            fontSize: "1.25rem",
+          }}
+        >
+          {eventDetails.title}
+        </Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          mb={2}
+          sx={{
+            color: "#747474",
+            fontFamily: "GilroySemibold",
+            fontSize: "0.875rem",
+          }}
+        >
+          {eventDetails?.start && eventDetails?.end
+            ? `${format(eventDetails.start, "HH:mm")} - ${format(
+                eventDetails.end,
+                "HH:mm"
+              )}`
+            : "Loading..."}
+        </Typography>
+
+        <Box display="flex" alignItems="center" mb={3} gap="10px">
+          <Typography
+            variant="body2"
+            fontWeight="500"
+            sx={{
+              color: "#000",
+              fontFamily: "GilroySemibold",
+              fontSize: "1rem",
+            }}
+          >
+            Registered Patients
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              color: "#95969C",
+              fontFamily: "GilroySemibold",
+              fontSize: "0.75rem",
+            }}
+          >
+            Session yet to start
+          </Typography>
+        </Box>
+
+        {/* Buttons */}
+        <Stack direction="row" spacing={2}>
+          <Button
+            variant="outlined"
+            startIcon={<EditIcon />}
+            onClick={() => {
+              setIsEdit(true);
+              setOpenStartSessionModal(false);
+              setOpenSessionModal(true);
+            }}
+            size="small"
+            sx={{
+              textTransform: "none",
+              color: "#2B72E6",
+              borderRadius: "0.25rem",
+              border: "1px solid #2B72E6",
+              fontFamily: "GilroySemibold",
+            }}
+          >
+            Edit Session
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<PlayArrowIcon />}
+            size="small"
+            sx={{
+              textTransform: "none",
+              color: "#fff",
+              backgroundColor: "#2B72E6",
+              fontFamily: "GilroySemibold",
+            }}
+          >
+            Start Session
+          </Button>
+        </Stack>
+      </Box>
+    </Modal>
+  );
+};
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 500,
+  bgcolor: "background.paper",
+  borderRadius: 3,
+  boxShadow: 24,
+  p: 4,
+};
+
+export default StartSession;

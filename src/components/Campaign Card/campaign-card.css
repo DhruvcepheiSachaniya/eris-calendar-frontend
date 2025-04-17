@@ -1,4 +1,3 @@
-
 .campaign-card-box {
   height: 15rem;
   display: flex;
@@ -6,6 +5,11 @@
   align-items: center;
   border: 0.1px solid rgb(197, 197, 197);
   position: relative;
+  border-radius: 10px;
 }
 
-
+.campaign-card-box img {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
