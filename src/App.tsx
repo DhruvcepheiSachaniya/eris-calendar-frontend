@@ -7,6 +7,8 @@ import PatientForm from "./pages/Patient Form/PatientForm";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SessionPage from "./pages/Session/Session";
+import EndSessionPage from "./pages/EndSession";
+import ViewPatientPage from "./pages/ViewPatient/viewpatient";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/campaign" element={<Campaign />}></Route>
           <Route path="/session" element={<SessionPage />}></Route>
           <Route path="/patient-form" element={<PatientForm />}></Route>
+          <Route path="/end" element={<EndSessionPage />}></Route>
+          <Route path="/view" element={<ViewPatientPage />}></Route>
         </Routes>
       </Router>
       <ToastContainer

@@ -5,18 +5,25 @@ import LogoutBar from "../../components/Logout Bar/LogoutBar";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { registerPatient } from "../../../api.js";
+import { useSearchParams } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const PatientForm = () => {
   const [patientDetails, setPatientDetails] = useState({
-    code: "PAT123",
+    code: generateSixDigitCode(),
     name: "",
     age: "",
     gender: "",
     prescriptionFile: null,
     reportFile: null,
   });
-
+  const [searchParams] = useSearchParams();
+  const drCode = searchParams.get("drCode");
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   console.log(patientDetails);
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -39,18 +46,27 @@ const PatientForm = () => {
 
   const handleSubmitPatient = async () => {
     try {
+      setIsButtonLoading(true);
       const response = await registerPatient({
         patientcode: patientDetails.code,
         name: patientDetails.name,
         age: patientDetails.age,
         gender: patientDetails.gender,
-        drcode: "DR123",
+        drcode: drCode,
         pre_img: patientDetails.prescriptionFile.file,
         rep_img: patientDetails.reportFile.file,
       });
-      console.log(response);
+      if (response.status) {
+        toast.success("Patient Added Successfully");
+        navigate(`/session?sessionid=${response.data.sessionInfo.id}`);
+        console.log(response);
+      } else {
+        throw new Error(response.message);
+      }
     } catch (error) {
-      console.log(error);
+      toast.error(error.message || "Something went wrong");
+    } finally {
+      setIsButtonLoading(false);
     }
   };
 
@@ -351,7 +367,7 @@ const PatientForm = () => {
               },
             }}
           >
-            Save Patient
+            {isButtonLoading ? <CircularProgress /> : "Save Patient"}
           </Button>
         </Box>
       </Box>
@@ -360,3 +376,7 @@ const PatientForm = () => {
 };
 
 export default PatientForm;
+
+function generateSixDigitCode() {
+  return Math.floor(100000 + Math.random() * 900000);
+}

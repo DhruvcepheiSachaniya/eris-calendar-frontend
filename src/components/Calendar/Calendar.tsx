@@ -26,7 +26,7 @@ const locales = {
 const localizer = dateFnsLocalizer({
   format,
   parse,
-  startOfWeek,
+  startOfWeek, // Sunday as first day
   getDay,
   locales,
 });

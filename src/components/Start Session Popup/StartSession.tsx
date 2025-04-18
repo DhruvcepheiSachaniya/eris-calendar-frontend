@@ -214,6 +214,7 @@ const StartSession = ({
                   backgroundColor: "rgba(230, 57, 70, 0.04)",
                 },
               }}
+              onClick={() => navigate(`/end?sessionid=${eventDetails.id}`)}
             >
               End Session
             </Button>

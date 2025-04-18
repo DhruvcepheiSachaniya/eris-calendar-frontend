@@ -17,12 +17,14 @@ import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const SessionPage = () => {
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const sessionid = searchParams.get("sessionid");
   const [patientList, setPatientList] = useState([]);
-  const [doctor, setDoctor] = useState({ name: "", speciality: "" });
+  const [doctor, setDoctor] = useState({ code: "", name: "", speciality: "" });
+  const navigate = useNavigate();
 
   const fetchPatientList = async (sessionid) => {
     try {
@@ -31,6 +33,7 @@ const SessionPage = () => {
       if (response.status) {
         setPatientList(response.find_session.patients);
         setDoctor({
+          code: response.find_session.dr_code,
           name: response.find_session.dr_code,
           speciality: response.find_session.dr_speciality,
         });
@@ -172,6 +175,7 @@ const SessionPage = () => {
 
           {/* Add Patient Button */}
           <Button
+            onClick={() => navigate(`/patient-form?drCode=${doctor.code}`)}
             variant="contained"
             startIcon={<AddIcon />}
             sx={{
@@ -195,6 +199,7 @@ const SessionPage = () => {
           {/* End Session Button */}
           <Button
             variant="outlined"
+            onClick={() => navigate(`/end?sessionid=${sessionid}`)}
             startIcon={<BlockIcon />}
             sx={{
               color: "red",

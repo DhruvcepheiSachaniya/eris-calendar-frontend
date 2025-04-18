@@ -1,11 +1,9 @@
-/* Define a shared consistent width */
 :root {
-  --calendar-column-width: 160px;
+  --calendar-column-width: 130px; /* reduced from 160px to 100px */
 }
 
 /* =================== Time Slots (Hour Rows) =================== */
 
-/* Control height of each time slot row */
 .rbc-time-content > .rbc-time-gutter,
 .rbc-time-content > .rbc-day-slot {
   min-height: 1000px;
@@ -13,10 +11,9 @@
 
 /* =================== Time Gutter (Left Time Column) =================== */
 .rbc-time-gutter {
-  width: 50px !important;
-  text-align: right;
-  padding-right: 6px;
-  font-size: 0.75rem;
+  width: 45px !important;
+  font-size: 0.7rem;
+  padding-right: 4px;
   color: #444;
 }
 
@@ -26,23 +23,20 @@
   max-width: var(--calendar-column-width);
 }
 
-/* Optional: allow horizontal scrolling if screen is small */
+/* Remove horizontal scroll enforcement */
 .rbc-time-view {
-  overflow-x: auto;
+  min-width: unset !important;
+  overflow-x: hidden;
 }
 
 /* =================== Weekday Header =================== */
 .rbc-time-header {
-  min-height: 60px;
+  min-height: 50px;
   background-color: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 2;
   border-bottom: 1px solid #ddd;
   display: flex;
 }
 
-/* Make sure header container aligns properly */
 .rbc-time-header-content {
   display: flex;
 }
@@ -52,11 +46,10 @@
   height: 100%;
 }
 
-/* Style each day name cell */
 .rbc-time-header-content > .rbc-row .rbc-header {
   min-width: var(--calendar-column-width) !important;
   max-width: var(--calendar-column-width);
-  padding: 12px 8px;
+  padding: 8px 4px;
 }
 
 .rbc-header {
@@ -66,15 +59,13 @@
 }
 
 .rbc-header span {
-  fcolor: var(--Light-Theme-Rest-Foreground-Default-Foreground-2, #616161);
+  color: #616161;
   font-family: GilroyMedium;
-  font-size: 1.25rem;
-  font-style: normal;
+  font-size: 1rem;
   font-weight: 400;
-  line-height: 1.55975rem;
 }
 
-/* =================== General Event Cell Alignment =================== */
+/* =================== Event Cell =================== */
 .rbc-event-content {
   display: flex;
   flex-direction: column;
@@ -95,6 +86,16 @@
   display: none !important;
 }
 
+/* Remove excess border */
 .rbc-time-content .rbc-time-slot:nth-of-type(1n) {
   border: 1px solid rgb(255, 255, 255);
+}
+
+/* Disable swipe */
+.rbc-calendar {
+  touch-action: none;
+}
+
+.rbc-time-content {
+  overflow-x: hidden;
 }
