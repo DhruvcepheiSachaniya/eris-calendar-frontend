@@ -95,6 +95,30 @@ export const getDoctorsList = async (empCode) => {
   }
 };
 
+export const registerPatient = async (patientDetails) => {
+  try {
+    const response = await axiosInstance.post("/patient/add", patientDetails, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
+export const getPatientList = async (sessionid) => {
+  try {
+    const response = await axiosInstance.get(
+      `/session/patient/list?sessionid=${sessionid}`
+    );
+    return response.data;
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
 const handleApiError = (error) => {
   console.error("API Error:", error);
   if (error.response) {

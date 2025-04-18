@@ -3,6 +3,7 @@ import { ThemeProvider, CssBaseline } from "@mui/material";
 import theme from "./theme/MuiTheme";
 import Home from "./pages/Home/Home";
 import Campaign from "./pages/Campaign/Campaign";
+import PatientForm from "./pages/Patient Form/PatientForm";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SessionPage from "./pages/Session/Session";
@@ -16,6 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/campaign" element={<Campaign />}></Route>
           <Route path="/session" element={<SessionPage />}></Route>
+          <Route path="/patient-form" element={<PatientForm />}></Route>
         </Routes>
       </Router>
       <ToastContainer

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { addSession } from "../../../api.js";
+import { addSession, getPatientList, startSession } from "../../../api.js";
 import {
   Modal,
   Box,
@@ -23,6 +23,7 @@ import TextFieldsIcon from "@mui/icons-material/TextFields";
 import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 const StartSession = ({
   open,
@@ -32,6 +33,23 @@ const StartSession = ({
   setOpenStartSessionModal,
   setIsEdit,
 }) => {
+  const navigate = useNavigate();
+
+  const handleStartSession = async () => {
+    try {
+      const response = await startSession(eventDetails.id);
+      if (response.status) {
+        toast.success("Session Started Succesfully");
+        navigate(`/session?sessionid=${eventDetails.id}`);
+        setOpenStartSessionModal(false);
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      toast.error(error.message || "Something went wrong");
+    }
+  };
+
   return (
     <Modal open={open}>
       <Box sx={style}>
@@ -148,6 +166,7 @@ const StartSession = ({
             </Button>
           ) : (
             <Button
+              onClick={() => navigate(`/session?sessionid=${eventDetails.id}`)}
               variant="contained"
               startIcon={<LogoutIcon />}
               sx={{
@@ -176,6 +195,7 @@ const StartSession = ({
                 backgroundColor: "#2B72E6",
                 fontFamily: "GilroySemibold",
               }}
+              onClick={handleStartSession}
             >
               Start Session
             </Button>
