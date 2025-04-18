@@ -5,6 +5,7 @@ import Home from "./pages/Home/Home";
 import Campaign from "./pages/Campaign/Campaign";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SessionPage from "./pages/Session/Session";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/campaign" element={<Campaign />}></Route>
+          <Route path="/session" element={<SessionPage />}></Route>
         </Routes>
       </Router>
       <ToastContainer

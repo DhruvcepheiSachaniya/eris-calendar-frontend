@@ -4,7 +4,6 @@ export const addSession = async (sessionData) => {
   try {
     const response = await axiosInstance.post("/session/add", sessionData);
     return response.data;
-
   } catch (error) {
     return handleApiError(error);
   }
@@ -61,25 +60,37 @@ export const getPatientCount = async (sessionid) => {
   }
 };
 
-export const getCampaignList = async () => {
+export const getCampaignList = async (empCode) => {
   try {
-    const response = await axiosInstance.get("/campaign/list");
+    const response = await axiosInstance.get(
+      `/campaign/list?empcode=${empCode}`
+    );
     return response.data;
   } catch (error) {
     return handleApiError(error);
   }
 };
 
-export const getCampaignDetails = async (campaignId) => {
+export const getCampaignDetails = async (campaignId, empCode) => {
   try {
     const response = await axiosInstance.get(
-      `/campaign/details?campaignid=${campaignId}`
+      `/campaign/details?campaignid=${campaignId}&empcode=${empCode}`
     );
-    
 
     return response.data;
   } catch (error) {
-    
+    return handleApiError(error);
+  }
+};
+
+export const getDoctorsList = async (empCode) => {
+  try {
+    const response = await axiosInstance.get(
+      `/doctor/doctorlist?empCode=${empCode}`
+    );
+
+    return response.data;
+  } catch (error) {
     return handleApiError(error);
   }
 };

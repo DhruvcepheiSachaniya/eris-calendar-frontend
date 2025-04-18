@@ -11,13 +11,15 @@ import { toast } from "react-toastify";
 const Home = () => {
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [campaigns, setCampaigns] = useState([]);
+  const [campaignsStats, setCampaignsStats] = useState({});
 
-  const fetchCampaigns = async () => {
+  const fetchCampaigns = async (empCode) => {
     try {
       setIsPageLoading(true);
-      const response = await getCampaignList();
+      const response = await getCampaignList(empCode);
       if (response.status) {
         setCampaigns(response.all_campaign);
+        setCampaignsStats(response.stats);
       } else {
         throw new Error(response.message);
       }
@@ -29,7 +31,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchCampaigns();
+    fetchCampaigns("E09873");
   }, []);
 
   if (isPageLoading) {
@@ -50,10 +52,22 @@ const Home = () => {
     <div className="home-container">
       <LogoutBar />
       <div className="cards">
-        <Card heading="Schedule/Target Sessions" value="20/30" />
-        <Card heading="Associated/Target Doctors" value="12/24" />
-        <Card heading="Sessions Completed" value="15" />
-        <Card heading="Total Patients" value="50" />
+        <Card
+          heading="Schedule/Target Sessions"
+          value={`${campaignsStats.scheduled_sessions}/30`}
+        />
+        <Card
+          heading="Associated/Target Doctors"
+          value={`${campaignsStats.associated_doctor}/24`}
+        />
+        <Card
+          heading="Sessions Completed"
+          value={`${campaignsStats.session_completed}`}
+        />
+        <Card
+          heading="Total Patients"
+          value={`${campaignsStats.total_patients}`}
+        />
       </div>
       <div className="campaigns">
         <p className="campaign-heading">Ongoing Campaigns</p>

@@ -5,7 +5,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import LogoutBar from "../../components/Logout Bar/LogoutBar";
 import Card from "../../components/Card/Card";
 import { useSearchParams } from "react-router-dom";
-import { getCampaignDetails } from "../../../api.js";
+import { getCampaignDetails, getDoctorsList } from "../../../api.js";
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
@@ -14,14 +14,14 @@ const Campaign = () => {
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [campaignDetails, setCampaignDetails] = useState({});
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-
+  const [doctorList, setDoctorList] = useState([]);
   const [searchParams] = useSearchParams();
   const campaignId = searchParams.get("campaignId");
 
-  const fetchCampaignDetails = async (campaignId) => {
+  const fetchCampaignDetails = async (campaignId, empCode) => {
     try {
       setIsPageLoading(true);
-      const response = await getCampaignDetails(campaignId);
+      const response = await getCampaignDetails(campaignId, empCode);
       if (response.status) {
         console.log(response);
         setCampaignDetails(response);
@@ -35,8 +35,29 @@ const Campaign = () => {
     }
   };
 
+  const fetchDoctorsList = async (empCode) => {
+    try {
+      setIsPageLoading(true);
+      const response = await getDoctorsList(empCode);
+      if (response.status) {
+        setDoctorList(response.doctorList);
+        console.log(response);
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      toast.error(error);
+    } finally {
+      setIsPageLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetchCampaignDetails(campaignId);
+    fetchDoctorsList("E09873");
+  }, []);
+
+  useEffect(() => {
+    fetchCampaignDetails(campaignId, "E09873");
   }, [refreshTrigger]);
 
   if (isPageLoading) {
@@ -77,6 +98,7 @@ const Campaign = () => {
         <BigCalendar
           campaignDetails={campaignDetails}
           setRefreshTrigger={setRefreshTrigger}
+          doctorList={doctorList}
         />
       </LocalizationProvider>
     </div>

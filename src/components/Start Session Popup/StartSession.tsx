@@ -15,6 +15,9 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import BlockIcon from "@mui/icons-material/Block";
+import LogoutIcon from "@mui/icons-material/Logout"; // or OpenInNew if preferred
 import PersonIcon from "@mui/icons-material/Person";
 import TextFieldsIcon from "@mui/icons-material/TextFields";
 import { CircularProgress } from "@mui/material";
@@ -84,49 +87,117 @@ const StartSession = ({
             variant="body2"
             color="text.secondary"
             sx={{
-              color: "#95969C",
-              fontFamily: "GilroySemibold",
-              fontSize: "0.75rem",
+              ...(eventDetails.status === "Scheduled"
+                ? {
+                    color: "#95969C",
+                    fontFamily: "GilroySemibold",
+                    fontSize: "0.75rem",
+                  }
+                : {
+                    color: "#000",
+                    fontFamily: "GilroySemiBold",
+                    fontSize: "1.25rem",
+                  }),
             }}
           >
-            Session yet to start
+            {eventDetails.status === "Scheduled"
+              ? "Session yet to start"
+              : eventDetails.patients}
           </Typography>
         </Box>
 
         {/* Buttons */}
         <Stack direction="row" spacing={2}>
-          <Button
-            variant="outlined"
-            startIcon={<EditIcon />}
-            onClick={() => {
-              setIsEdit(true);
-              setOpenStartSessionModal(false);
-              setOpenSessionModal(true);
-            }}
-            size="small"
-            sx={{
-              textTransform: "none",
-              color: "#2B72E6",
-              borderRadius: "0.25rem",
-              border: "1px solid #2B72E6",
-              fontFamily: "GilroySemibold",
-            }}
-          >
-            Edit Session
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<PlayArrowIcon />}
-            size="small"
-            sx={{
-              textTransform: "none",
-              color: "#fff",
-              backgroundColor: "#2B72E6",
-              fontFamily: "GilroySemibold",
-            }}
-          >
-            Start Session
-          </Button>
+          {eventDetails.status === "Scheduled" ? (
+            <Button
+              variant="outlined"
+              startIcon={<EditIcon />}
+              onClick={() => {
+                setIsEdit(true);
+                setOpenStartSessionModal(false);
+                setOpenSessionModal(true);
+              }}
+              size="small"
+              sx={{
+                textTransform: "none",
+                color: "#2B72E6",
+                borderRadius: "0.25rem",
+                border: "1px solid #2B72E6",
+                fontFamily: "GilroySemibold",
+              }}
+            >
+              Edit Session
+            </Button>
+          ) : eventDetails.status === "Ended" ? (
+            <Button
+              variant="outlined"
+              startIcon={<VisibilityIcon />} // use any icon you prefer
+              onClick={() => {
+                // your custom logic here
+              }}
+              size="small"
+              sx={{
+                textTransform: "none",
+                color: "#2B72E6",
+                borderRadius: "0.25rem",
+                border: "1px solid #2B72E6",
+                fontFamily: "GilroySemibold",
+              }}
+            >
+              View Session
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              startIcon={<LogoutIcon />}
+              sx={{
+                backgroundColor: "#FFD996",
+                color: "#6B4F1D",
+                borderRadius: "8px",
+                textTransform: "none",
+                fontWeight: "600",
+                "&:hover": {
+                  backgroundColor: "#f0c779",
+                },
+              }}
+            >
+              Continue Session
+            </Button>
+          )}
+
+          {eventDetails.status === "Scheduled" ? (
+            <Button
+              variant="contained"
+              startIcon={<PlayArrowIcon />}
+              size="small"
+              sx={{
+                textTransform: "none",
+                color: "#fff",
+                backgroundColor: "#2B72E6",
+                fontFamily: "GilroySemibold",
+              }}
+            >
+              Start Session
+            </Button>
+          ) : eventDetails.status === "Started" ? (
+            <Button
+              variant="outlined"
+              startIcon={<BlockIcon />}
+              size="small"
+              sx={{
+                textTransform: "none",
+                color: "#E63946",
+                borderColor: "#E63946",
+                fontFamily: "GilroySemibold",
+                "&:hover": {
+                  borderColor: "#c72d39",
+                  backgroundColor: "rgba(230, 57, 70, 0.04)",
+                },
+              }}
+            >
+              End Session
+            </Button>
+          ) : null}
         </Stack>
       </Box>
     </Modal>

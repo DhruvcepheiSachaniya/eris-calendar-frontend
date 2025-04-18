@@ -20,6 +20,7 @@ const Session = ({
   setRefreshTrigger,
   eventDetails,
   isEdit,
+  doctorList,
 }) => {
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -54,9 +55,9 @@ const Session = ({
         startTime: start.toISOString(),
         endTime: end.toISOString(),
         Study: "Campaign1",
-        drCode: "DR123",
+        drCode: formData.doctor,
         drspeciality: "Cardiology",
-        empCode: "E00874",
+        empCode: "EMP002",
       });
       if (response.status) {
         toast.success("Session Scheduled Successfully");
@@ -185,8 +186,9 @@ const Session = ({
               },
             }}
           >
-            <MenuItem value="Dr. Smith">Dr. Smith</MenuItem>
-            <MenuItem value="Dr. John">Dr. John</MenuItem>
+            {doctorList.map((doctor) => (
+              <MenuItem value={doctor.drCode}>{doctor.drName}</MenuItem>
+            ))}
           </TextField>
         </Box>
 
@@ -315,7 +317,7 @@ const Session = ({
         </Box>
 
         {/* Reason TextArea */}
-        <Box sx={{ mb: 3 }}>
+        <Box sx={{ mb: 3, display: isEdit ? "" : "none" }}>
           <Typography
             fontWeight={500}
             mb={1}

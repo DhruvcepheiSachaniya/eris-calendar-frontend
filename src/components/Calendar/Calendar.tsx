@@ -8,6 +8,7 @@ import {
   add,
   startOfDay,
   setHours,
+  setMinutes,
 } from "date-fns";
 import { enUS } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -55,7 +56,7 @@ const eventStyleGetter = () => ({
   },
 });
 
-const BigCalendar = ({ campaignDetails, setRefreshTrigger }) => {
+const BigCalendar = ({ campaignDetails, setRefreshTrigger, doctorList }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [openSessionModal, setOpenSessionModal] = useState(false);
@@ -83,12 +84,18 @@ const BigCalendar = ({ campaignDetails, setRefreshTrigger }) => {
 
   const open = Boolean(anchorEl);
 
-  const events = campaignDetails.data.sessions.map((session) => ({
-    id: session.id,
-    title: `${session.dr_code}\n${session.dr_speciality}`,
-    start: new Date(session.start_time),
-    end: new Date(session.end_time),
-  }));
+  const events =
+    Array.isArray(campaignDetails?.data?.sessions) &&
+    campaignDetails.data.sessions.length > 0
+      ? campaignDetails.data.sessions.map((session: any) => ({
+          id: session.id,
+          status: session.status,
+          patients: session.patients.length,
+          title: `${session.dr_code}\n${session.dr_speciality}`,
+          start: new Date(session.start_time),
+          end: new Date(session.end_time),
+        }))
+      : [];
 
   const handleEvent = (event) => {
     setOpenStartSessionModal(true);
@@ -169,8 +176,8 @@ const BigCalendar = ({ campaignDetails, setRefreshTrigger }) => {
             eventTimeRangeFormat: () => "",
             timeGutterFormat: (date) => format(date, "HH:mm"),
           }}
-          min={setHours(startOfDay(new Date()), 6)}
-          max={setHours(startOfDay(new Date()), 23)}
+          min={setHours(startOfDay(new Date()), 0)}
+          max={setMinutes(setHours(startOfDay(new Date()), 23), 59)}
           components={{
             toolbar: () => null,
             event: ({ event }) => {
@@ -209,6 +216,7 @@ const BigCalendar = ({ campaignDetails, setRefreshTrigger }) => {
         setRefreshTrigger={setRefreshTrigger}
         eventDetails={eventDetails}
         isEdit={isEdit}
+        doctorList={doctorList}
       />
       <StartSession
         open={openStartSessionModal}
