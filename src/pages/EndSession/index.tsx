@@ -14,19 +14,21 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useEffect, useState } from "react";
 import { getSessionEndDetails, endSession } from "../../../api.js";
 import dayjs from "dayjs";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import LogoutBar from "../../components/Logout Bar/LogoutBar.js";
 import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 
 const EndSessionPage = () => {
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [campExecuted, setCampExecuted] = useState("No");
   const [drKitDistributed, setDrKitDistributed] = useState("No");
   const [searchParams] = useSearchParams();
   const sessionid = searchParams.get("sessionid");
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [endDetails, setEndDetails] = useState({});
+  const navigate = useNavigate();
 
   const handleCampExecutedChange = (event: any) => {
     setCampExecuted(event.target.value);
@@ -37,14 +39,25 @@ const EndSessionPage = () => {
   };
 
   const handleEndSession = async () => {
-    const payload = {
-      sessionid: sessionid,
-      cam_excecuted: campExecuted,
-      kit_distributed: drKitDistributed,
-    };
+    try {
+      setIsButtonLoading(true);
+      const payload = {
+        sessionid: sessionid,
+        cam_excecuted: campExecuted,
+        kit_distributed: drKitDistributed,
+      };
 
-    const result = await endSession(payload);
-    console.log(result);
+      const response = await endSession(payload);
+      if (response.status) {
+        navigate(`/session-page?sessionid=${sessionid}`);
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      toast.error(`Doctors List Error: ${error.message}`);
+    } finally {
+      setIsButtonLoading(false);
+    }
   };
 
   const fetchSessionEndDetails = async (sessionid) => {
@@ -494,7 +507,7 @@ const EndSessionPage = () => {
           </Grid>
         </Box>
         {/* Buttons */}
-        <Stack direction="row" spacing={2} justifyContent="flex-end" mt={4}>
+        <Stack direction="row" spacing={2} justifyContent="flex-end" mt={4} pr={4} pb={4}>
           <Button
             variant="outlined"
             sx={{

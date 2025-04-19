@@ -14,10 +14,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import PersonIcon from "@mui/icons-material/Person";
+import { useNavigate } from "react-router-dom";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
-
+  const navigate = useNavigate();
   const toggleDrawer = (state) => () => {
     setOpen(state);
   };
@@ -62,7 +63,7 @@ export default function Sidebar() {
 
             {/* Menu Items */}
             <List>
-              <ListItem button>
+              <ListItem button onClick={() => navigate("/")}>
                 <ListItemIcon>
                   <HomeIcon />
                 </ListItemIcon>

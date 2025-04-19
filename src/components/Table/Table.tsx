@@ -10,14 +10,25 @@ import {
   Button,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { useNavigate } from "react-router-dom";
 
-const PatientTable = ({ patientList }) => {
+const PatientTable = ({
+  patientList,
+  View,
+  drcode,
+}: {
+  patientList: any;
+  View?: any;
+  drcode?: any;
+}) => {
   const rows = patientList.map((patient) => ({
     code: patient.patient_code,
     name: patient.patient_name,
     age: patient.patient_age,
     gender: patient.patient_gender,
   }));
+
+  const navigate = useNavigate();
   return (
     <TableContainer
       component={Paper}
@@ -94,6 +105,13 @@ const PatientTable = ({ patientList }) => {
                 <Button
                   variant="contained"
                   startIcon={<EditIcon />}
+                  onClick={() =>
+                    View
+                      ? navigate("/view", {
+                          state: { patientcode: row.code, drcode },
+                        })
+                      : undefined
+                  }
                   sx={{
                     textTransform: "none",
                     borderRadius: "0.5rem",
@@ -106,7 +124,7 @@ const PatientTable = ({ patientList }) => {
                     },
                   }}
                 >
-                  Edit Details
+                  {View ? "View Details" : "Edit Details"}
                 </Button>
               </TableCell>
             </TableRow>

@@ -9,15 +9,17 @@ import { getCampaignDetails, getDoctorsList } from "../../../api.js";
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setDoctorList } from "../../redux/slices/doctorSlice"; // adjus
 
 const Campaign = () => {
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [campaignDetails, setCampaignDetails] = useState({});
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [doctorList, setDoctorList] = useState([]);
   const [searchParams] = useSearchParams();
   const campaignId = searchParams.get("campaignId");
   const emp_code = localStorage.getItem("emp_code");
+  const dispatch = useDispatch();
 
   const fetchCampaignDetails = async (campaignId, empCode) => {
     try {
@@ -36,7 +38,7 @@ const Campaign = () => {
     try {
       const response = await getDoctorsList(empCode);
       if (response.status) {
-        setDoctorList(response.doctorList);
+        dispatch(setDoctorList(response.doctorList)); // dispatch to redux
       } else {
         throw new Error(response.message);
       }
@@ -96,7 +98,6 @@ const Campaign = () => {
         <BigCalendar
           campaignDetails={campaignDetails}
           setRefreshTrigger={setRefreshTrigger}
-          doctorList={doctorList}
         />
       </LocalizationProvider>
     </div>

@@ -149,7 +149,12 @@ const StartSession = ({
           ) : eventDetails.status === "Ended" ? (
             <Button
               variant="outlined"
-              startIcon={<VisibilityIcon />} // use any icon you prefer
+              startIcon={<VisibilityIcon />}
+              onClick={() => {
+                navigate(
+                  `/session-page?sessionid=${eventDetails.id}&drcode=${eventDetails.drcode}`
+                );
+              }}
               size="small"
               sx={{
                 textTransform: "none",
@@ -163,7 +168,11 @@ const StartSession = ({
             </Button>
           ) : (
             <Button
-              onClick={() => navigate(`/session?sessionid=${eventDetails.id}`)}
+              onClick={() =>
+                navigate(
+                  `/session?sessionid=${eventDetails.id}&drcode=${eventDetails.drcode}`
+                )
+              }
               variant="contained"
               startIcon={<LogoutIcon />}
               sx={{

@@ -18,13 +18,16 @@ import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 const SessionPage = () => {
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const sessionid = searchParams.get("sessionid");
+  const drcode = searchParams.get("drcode");
   const [patientList, setPatientList] = useState([]);
-  const [doctor, setDoctor] = useState({ code: "", name: "", speciality: "" });
   const navigate = useNavigate();
+  const doctorList = useSelector((state) => state.doctor.list);
 
   const fetchPatientList = async (sessionid) => {
     try {
@@ -32,11 +35,6 @@ const SessionPage = () => {
       const response = await getPatientList(sessionid);
       if (response.status) {
         setPatientList(response.find_session.patients);
-        setDoctor({
-          code: response.find_session.dr_code,
-          name: response.find_session.dr_code,
-          speciality: response.find_session.dr_speciality,
-        });
       } else {
         throw new Error(response.message);
       }
@@ -99,7 +97,7 @@ const SessionPage = () => {
               whiteSpace: "nowrap",
             }}
           >
-            {doctor.name}
+            {getDoctorByCode(drcode, doctorList).drName}
           </Typography>
 
           <FiberManualRecordIcon
@@ -114,7 +112,7 @@ const SessionPage = () => {
               whiteSpace: "nowrap",
             }}
           >
-            {doctor.speciality}
+            {getDoctorByCode(drcode, doctorList).speciality}
           </Typography>
 
           <ChevronRightIcon sx={{ color: "#191d23" }} />
@@ -175,7 +173,11 @@ const SessionPage = () => {
 
           {/* Add Patient Button */}
           <Button
-            onClick={() => navigate(`/patient-form?drCode=${doctor.code}`)}
+            onClick={() =>
+              navigate(
+                `/patient-form?drcode=${drcode}&sessionid=${sessionid}`
+              )
+            }
             variant="contained"
             startIcon={<AddIcon />}
             sx={{
@@ -223,6 +225,10 @@ const SessionPage = () => {
       <PatientTable patientList={patientList} />
     </div>
   );
+};
+
+const getDoctorByCode = (drcode, doctorList) => {
+  return doctorList.find((doctor) => doctor.drCode === drcode);
 };
 
 export default SessionPage;

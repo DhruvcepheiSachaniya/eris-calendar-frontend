@@ -17,6 +17,7 @@ import ViewPatientPage from "./pages/ViewPatient/viewpatient";
 import LoginPage from "./pages/Login/login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import PerSessionPage from "./pages/Session/PerSession";
 
 const isAuthenticated = () => {
   return localStorage.getItem("token") !== null;
@@ -49,6 +50,7 @@ const AppContent = () => {
           <Route path="/patient-form" element={<PatientForm />} />
           <Route path="/end" element={<EndSessionPage />} />
           <Route path="/view" element={<ViewPatientPage />} />
+          <Route path="/session-page" element={<PerSessionPage />}></Route>
         </Route>
 
         {/* Fallback */}

@@ -13,6 +13,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
+import { useSelector } from "react-redux";
 
 const Session = ({
   open,
@@ -20,7 +21,6 @@ const Session = ({
   setRefreshTrigger,
   eventDetails,
   isEdit,
-  doctorList,
 }) => {
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -30,6 +30,7 @@ const Session = ({
     endTime: "",
     reason: "",
   });
+  const doctorList = useSelector((state) => state.doctor.list);
 
   const handleChange = (field) => (event) => {
     setFormData((prev) => ({
@@ -86,11 +87,12 @@ const Session = ({
       end.setHours(Number(endHours), Number(endMinutes), 0);
 
       const response = await editSession({
+        drCode: eventDetails.drcode,
         sessionId: eventDetails.id,
         date: new Date().toISOString(),
         startTime: start.toISOString(),
         endTime: end.toISOString(),
-        select_reason: formData.reason,
+        select_reason: reason,
       });
       if (response.status) {
         toast.success("Session Edited Successfully");
@@ -107,21 +109,36 @@ const Session = ({
   };
 
   useEffect(() => {
-    if (isEdit) {
-      setFormData({
-        doctor: eventDetails.title.split,
-        date: format(new Date(eventDetails.start), "yyyy-MM-dd"),
-        startTime: format(new Date(eventDetails.start), "HH:mm"),
-        endTime: format(new Date(eventDetails.end), "HH:mm"),
-        reason: "",
-      });
+    if (open) {
+      if (isEdit && eventDetails) {
+        setFormData({
+          doctor: eventDetails.drcode || "",
+          date: eventDetails.start
+            ? format(new Date(eventDetails.start), "yyyy-MM-dd")
+            : "",
+          startTime: eventDetails.start
+            ? format(new Date(eventDetails.start), "HH:mm")
+            : "",
+          endTime: eventDetails.end
+            ? format(new Date(eventDetails.end), "HH:mm")
+            : "",
+          reason: "",
+        });
+      } else {
+        setFormData({
+          doctor: "",
+          date: "",
+          startTime: "",
+          endTime: "",
+          reason: "",
+        });
+      }
     }
-  }, [isEdit]);
+  }, [open, isEdit, eventDetails]);
 
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
-        {/* Header */}
         <Box
           sx={{
             display: "flex",

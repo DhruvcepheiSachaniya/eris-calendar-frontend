@@ -18,6 +18,7 @@ import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import "./calendar.css";
 import SessionModal from "../Schedule Session Popup/Session";
 import StartSession from "../Start Session Popup/StartSession";
+import { useSelector } from "react-redux";
 
 const locales = {
   "en-US": enUS,
@@ -30,8 +31,6 @@ const localizer = dateFnsLocalizer({
   getDay,
   locales,
 });
-
-
 
 const eventStyleGetter = () => ({
   style: {
@@ -50,13 +49,14 @@ const eventStyleGetter = () => ({
   },
 });
 
-const BigCalendar = ({ campaignDetails, setRefreshTrigger, doctorList }) => {
+const BigCalendar = ({ campaignDetails, setRefreshTrigger }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [openSessionModal, setOpenSessionModal] = useState(false);
   const [openStartSessionModal, setOpenStartSessionModal] = useState(false);
   const [eventDetails, setEventDetails] = useState({});
   const [isEdit, setIsEdit] = useState(false);
+  const doctorList = useSelector((state) => state.doctor.list);
 
   const handleCloseSessionModal = () => {
     setOpenSessionModal(false);
@@ -85,9 +85,12 @@ const BigCalendar = ({ campaignDetails, setRefreshTrigger, doctorList }) => {
           id: session.id,
           status: session.status,
           patients: session.patients.length,
-          title: `${session.dr_code}\n${session.dr_speciality}`,
+          title: `${getDoctorByCode(session.dr_code, doctorList).drName}`,
+          speciality: session.dr_speciality,
           start: new Date(session.start_time),
           end: new Date(session.end_time),
+          drcode: session.dr_code,
+          drname: getDoctorByCode(session.dr_code, doctorList).drName,
         }))
       : [];
 
@@ -175,7 +178,9 @@ const BigCalendar = ({ campaignDetails, setRefreshTrigger, doctorList }) => {
           components={{
             toolbar: () => null,
             event: ({ event }) => {
-              const [doctor, specialization] = event.title.split("\n");
+              console.log("this is event", event);
+
+              const { drname, speciality } = event;
               return (
                 <div
                   style={{
@@ -192,10 +197,10 @@ const BigCalendar = ({ campaignDetails, setRefreshTrigger, doctorList }) => {
                       color: "#337E89",
                     }}
                   >
-                    {doctor}
+                    {drname}
                   </div>
                   <div style={{ fontSize: "0.8rem", color: "#888" }}>
-                    {specialization}
+                    {speciality}
                   </div>
                 </div>
               );
@@ -210,7 +215,6 @@ const BigCalendar = ({ campaignDetails, setRefreshTrigger, doctorList }) => {
         setRefreshTrigger={setRefreshTrigger}
         eventDetails={eventDetails}
         isEdit={isEdit}
-        doctorList={doctorList}
       />
       <StartSession
         open={openStartSessionModal}
@@ -222,6 +226,10 @@ const BigCalendar = ({ campaignDetails, setRefreshTrigger, doctorList }) => {
       />
     </div>
   );
+};
+
+const getDoctorByCode = (drcode, doctorList) => {
+  return doctorList.find((doctor) => doctor.drCode === drcode);
 };
 
 export default BigCalendar;

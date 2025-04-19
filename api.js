@@ -130,3 +130,14 @@ const handleApiError = (error) => {
     return { success: false, message: "Network error or server unreachable" };
   }
 };
+
+export const GetPatientDetails = async (patientId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/patient/details?patientcode=${patientId}`
+    );
+    return response.data;
+  } catch (error) {
+    return handleApiError(error);
+  }
+}

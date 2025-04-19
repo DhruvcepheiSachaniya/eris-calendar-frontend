@@ -9,6 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const PatientForm = () => {
   const [patientDetails, setPatientDetails] = useState({
@@ -20,7 +21,10 @@ const PatientForm = () => {
     reportFile: null,
   });
   const [searchParams] = useSearchParams();
-  const drCode = searchParams.get("drCode");
+  const drcode = searchParams.get("drcode");
+  const sessionid = searchParams.get("sessionid");
+  const doctorList = useSelector((state) => state.doctor.list);
+
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   console.log(patientDetails);
   const navigate = useNavigate();
@@ -48,6 +52,7 @@ const PatientForm = () => {
     try {
       setIsButtonLoading(true);
       const response = await registerPatient({
+        sessionid: sessionid,
         patientcode: patientDetails.code,
         name: patientDetails.name,
         age: patientDetails.age,
@@ -97,7 +102,6 @@ const PatientForm = () => {
     <div className="patient-form-container">
       <LogoutBar />
 
-      {/* Doctor Info */}
       <Box
         sx={{
           display: "flex",
@@ -113,7 +117,7 @@ const PatientForm = () => {
             color: "#191d23",
           }}
         >
-          Dr. Smith
+          {getDoctorByCode(drcode, doctorList).drName}
         </Typography>
         <FiberManualRecordIcon sx={{ fontSize: "0.5rem", color: "#191d23" }} />
         <Typography
@@ -123,7 +127,7 @@ const PatientForm = () => {
             color: "#191d23",
           }}
         >
-          Cardiologist
+          {getDoctorByCode(drcode, doctorList).speciality}
         </Typography>
         <ChevronRightIcon sx={{ color: "#191d23" }} />
         <Typography
@@ -376,6 +380,10 @@ const PatientForm = () => {
 };
 
 export default PatientForm;
+
+const getDoctorByCode = (drcode, doctorList) => {
+  return doctorList.find((doctor) => doctor.drCode === drcode);
+};
 
 function generateSixDigitCode() {
   return Math.floor(100000 + Math.random() * 900000);
