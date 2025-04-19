@@ -26,6 +26,7 @@ const EndSessionPage = () => {
   const [searchParams] = useSearchParams();
   const sessionid = searchParams.get("sessionid");
   const [isPageLoading, setIsPageLoading] = useState(true);
+  const [endDetails, setEndDetails] = useState({});
 
   const handleCampExecutedChange = (event: any) => {
     setCampExecuted(event.target.value);
@@ -35,16 +36,16 @@ const EndSessionPage = () => {
     setDrKitDistributed(event.target.value);
   };
 
-  /*const handleEndSession = async () => {
+  const handleEndSession = async () => {
     const payload = {
-      sessionid: sessionData.sessionId,
+      sessionid: sessionid,
       cam_excecuted: campExecuted,
       kit_distributed: drKitDistributed,
     };
 
     const result = await endSession(payload);
     console.log(result);
-  };*/
+  };
 
   const fetchSessionEndDetails = async (sessionid) => {
     try {
@@ -52,6 +53,8 @@ const EndSessionPage = () => {
       const response = await getSessionEndDetails(sessionid);
       if (response.status) {
         console.log(response);
+
+        setEndDetails(response.result);
       } else {
         throw new Error(response.message);
       }
@@ -62,11 +65,11 @@ const EndSessionPage = () => {
     }
   };
 
-  /*useEffect(() => {
+  useEffect(() => {
     fetchSessionEndDetails(sessionid);
-  }, []);*/
+  }, []);
 
-  /* if (isPageLoading) {
+  if (isPageLoading) {
     return (
       <div
         style={{
@@ -79,7 +82,7 @@ const EndSessionPage = () => {
         <CircularProgress sx={{ color: "blue" }} />
       </div>
     );
-  }*/
+  }
 
   return (
     <div className="end-session-page-container">
@@ -102,7 +105,7 @@ const EndSessionPage = () => {
               color: "#191d23",
             }}
           >
-            Dr. Smith
+            {endDetails.drname}
           </Typography>
           <FiberManualRecordIcon
             sx={{ fontSize: "0.5rem", color: "#191d23" }}
@@ -114,7 +117,7 @@ const EndSessionPage = () => {
               color: "#191d23",
             }}
           >
-            Cardiologist
+            {endDetails.speciality}
           </Typography>
           <ChevronRightIcon sx={{ color: "#191d23" }} />
           <Typography
@@ -163,7 +166,7 @@ const EndSessionPage = () => {
                 Camp Date
               </Typography>
               <Typography fontWeight={400} color="#95969C" fontSize={"20px"}>
-                {/*dayjs(sessionData.campaignDate).format("DD/MM/YYYY")*/}
+                {dayjs(endDetails.campaignDate).format("DD/MM/YYYY")}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -271,7 +274,7 @@ const EndSessionPage = () => {
                 fontSize="1.125rem"
                 fontFamily="GilroySemibold"
               >
-                abh
+                {endDetails.drcode}
               </Typography>
             </Grid>
             <Grid item xs={3}>
@@ -287,7 +290,7 @@ const EndSessionPage = () => {
                 fontSize="1.125rem"
                 fontFamily="GilroySemibold"
               >
-                abc
+                {endDetails.division}
               </Typography>
             </Grid>
             <Grid item xs={3}>
@@ -303,7 +306,7 @@ const EndSessionPage = () => {
                 fontSize="1.125rem"
                 fontFamily="GilroySemibold"
               >
-                abc
+                {endDetails.drname}
               </Typography>
             </Grid>
             <Grid item xs={3}>
@@ -319,7 +322,7 @@ const EndSessionPage = () => {
                 fontSize="1.125rem"
                 fontFamily="GilroySemibold"
               >
-                abc
+                {endDetails.speciality}
               </Typography>
             </Grid>
           </Grid>
@@ -361,7 +364,7 @@ const EndSessionPage = () => {
                 fontSize="1.125rem"
                 fontFamily="GilroySemibold"
               >
-                abc
+                {endDetails.empcode}
               </Typography>
             </Grid>
             <Grid item xs={3}>
@@ -393,7 +396,7 @@ const EndSessionPage = () => {
                 fontSize="1.125rem"
                 fontFamily="GilroySemibold"
               >
-                abc
+                {endDetails.empname}
               </Typography>
             </Grid>
             <Grid item xs={3}>
@@ -409,7 +412,7 @@ const EndSessionPage = () => {
                 fontSize="1.125rem"
                 fontFamily="GilroySemibold"
               >
-                abc
+                {endDetails.region}
               </Typography>
             </Grid>
           </Grid>
@@ -453,7 +456,7 @@ const EndSessionPage = () => {
                 fontSize="1.125rem"
                 fontFamily="GilroySemibold"
               >
-                abc
+                {endDetails.camp_total_patient}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -469,7 +472,7 @@ const EndSessionPage = () => {
                 fontSize="1.125rem"
                 fontFamily="GilroySemibold"
               >
-                abc
+                {endDetails.total_rx_generated}
               </Typography>
             </Grid>
             <Grid item xs={4}>
@@ -485,7 +488,7 @@ const EndSessionPage = () => {
                 fontSize="1.125rem"
                 fontFamily="GilroySemibold"
               >
-                abc{" "}
+                {endDetails.total_report_generated}
               </Typography>
             </Grid>
           </Grid>
@@ -503,6 +506,7 @@ const EndSessionPage = () => {
             Cancel
           </Button>
           <Button
+            onClick={handleEndSession}
             variant="contained"
             sx={{ background: "#2B72E6", color: "white" }}
           >

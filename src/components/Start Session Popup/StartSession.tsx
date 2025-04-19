@@ -150,9 +150,6 @@ const StartSession = ({
             <Button
               variant="outlined"
               startIcon={<VisibilityIcon />} // use any icon you prefer
-              onClick={() => {
-                // your custom logic here
-              }}
               size="small"
               sx={{
                 textTransform: "none",

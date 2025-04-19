@@ -31,13 +31,7 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-const events = [
-  {
-    title: "Dr. Shruti Sharma\nOncology",
-    start: new Date("2025-04-15T13:00:00"),
-    end: new Date("2025-04-15T16:00:00"),
-  },
-];
+
 
 const eventStyleGetter = () => ({
   style: {
