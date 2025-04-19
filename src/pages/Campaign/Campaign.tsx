@@ -17,48 +17,46 @@ const Campaign = () => {
   const [doctorList, setDoctorList] = useState([]);
   const [searchParams] = useSearchParams();
   const campaignId = searchParams.get("campaignId");
+  const emp_code = localStorage.getItem("emp_code");
 
   const fetchCampaignDetails = async (campaignId, empCode) => {
     try {
-      setIsPageLoading(true);
       const response = await getCampaignDetails(campaignId, empCode);
       if (response.status) {
-        console.log(response);
         setCampaignDetails(response);
       } else {
         throw new Error(response.message);
       }
     } catch (error) {
-      toast.error(error);
-    } finally {
-      setIsPageLoading(false);
+      toast.error(`Campaign Error: ${error.message}`);
     }
   };
 
   const fetchDoctorsList = async (empCode) => {
     try {
-      setIsPageLoading(true);
       const response = await getDoctorsList(empCode);
       if (response.status) {
         setDoctorList(response.doctorList);
-        console.log(response);
       } else {
         throw new Error(response.message);
       }
     } catch (error) {
-      toast.error(error);
-    } finally {
-      setIsPageLoading(false);
+      toast.error(`Doctors List Error: ${error.message}`);
     }
   };
 
   useEffect(() => {
-    fetchDoctorsList("E09873");
-  }, []);
+    const fetchData = async () => {
+      setIsPageLoading(true);
+      await Promise.all([
+        fetchDoctorsList(emp_code),
+        fetchCampaignDetails(campaignId, emp_code),
+      ]);
+      setIsPageLoading(false);
+    };
 
-  useEffect(() => {
-    fetchCampaignDetails(campaignId, "E09873");
-  }, [refreshTrigger]);
+    fetchData();
+  }, [campaignId, emp_code, refreshTrigger]);
 
   if (isPageLoading) {
     return (

@@ -12,6 +12,7 @@ const Home = () => {
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [campaigns, setCampaigns] = useState([]);
   const [campaignsStats, setCampaignsStats] = useState({});
+  const emp_code = localStorage.getItem("emp_code");
 
   const fetchCampaigns = async (empCode) => {
     try {
@@ -31,7 +32,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    fetchCampaigns("E09873");
+    fetchCampaigns(emp_code);
   }, []);
 
   if (isPageLoading) {
