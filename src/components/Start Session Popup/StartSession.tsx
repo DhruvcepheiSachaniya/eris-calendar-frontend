@@ -34,13 +34,13 @@ const StartSession = ({
   setIsEdit,
 }) => {
   const navigate = useNavigate();
-
+  // console.log(eventDetails);
   const handleStartSession = async () => {
     try {
       const response = await startSession(eventDetails.id);
       if (response.status) {
         toast.success("Session Started Succesfully");
-        navigate(`/session?sessionid=${eventDetails.id}`);
+        navigate(`/session?drcode=${eventDetails?.drcode}&sessionid=${eventDetails.id}`);
         setOpenStartSessionModal(false);
       } else {
         throw new Error(response.message);

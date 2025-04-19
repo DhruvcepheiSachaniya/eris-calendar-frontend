@@ -16,13 +16,15 @@ import { getPatientList } from "../../../api.js";
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const SessionPage = () => {
   const [isPageLoading, setIsPageLoading] = useState(true);
   const [searchParams] = useSearchParams();
+  const location = useLocation();
+  console.log(location)
   const sessionid = searchParams.get("sessionid");
   const drcode = searchParams.get("drcode");
   const [patientList, setPatientList] = useState([]);
@@ -97,7 +99,7 @@ const SessionPage = () => {
               whiteSpace: "nowrap",
             }}
           >
-            {getDoctorByCode(drcode, doctorList).drName}
+            {getDoctorByCode(drcode || url_drCode, doctorList)?.drName || url_drCode}
           </Typography>
 
           <FiberManualRecordIcon
@@ -112,7 +114,7 @@ const SessionPage = () => {
               whiteSpace: "nowrap",
             }}
           >
-            {getDoctorByCode(drcode, doctorList).speciality}
+            {getDoctorByCode(drcode  || url_drCode, doctorList)?.speciality}
           </Typography>
 
           <ChevronRightIcon sx={{ color: "#191d23" }} />

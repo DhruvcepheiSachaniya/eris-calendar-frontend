@@ -22,6 +22,7 @@ const ViewPatientPage = () => {
   const location = useLocation();
   const patientCode = location?.state?.patientcode;
   const drcode = location?.state?.drcode;
+  console.log(drcode)
   const [searchParams] = useSearchParams();
   //   const sessionid = location?.state?.sessionid;
 

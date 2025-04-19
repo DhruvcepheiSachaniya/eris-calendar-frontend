@@ -22,6 +22,7 @@ const PatientForm = () => {
   });
   const [searchParams] = useSearchParams();
   const drcode = searchParams.get("drcode");
+  console.debug(drcode)
   const sessionid = searchParams.get("sessionid");
   const doctorList = useSelector((state) => state.doctor.list);
 
@@ -57,13 +58,13 @@ const PatientForm = () => {
         name: patientDetails.name,
         age: patientDetails.age,
         gender: patientDetails.gender,
-        drcode: drCode,
+        drcode: drcode,
         pre_img: patientDetails.prescriptionFile.file,
         rep_img: patientDetails.reportFile.file,
       });
       if (response.status) {
         toast.success("Patient Added Successfully");
-        navigate(`/session?sessionid=${response.data.sessionInfo.id}`);
+        navigate(`/session?drcode=${drcode}&sessionid=${response.data.sessionInfo.id}`);
         console.log(response);
       } else {
         throw new Error(response.message);

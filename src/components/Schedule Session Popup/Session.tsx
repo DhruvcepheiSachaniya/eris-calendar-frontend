@@ -58,7 +58,7 @@ const Session = ({
         Study: "Campaign1",
         drCode: formData.doctor,
         drspeciality: "Cardiology",
-        empCode: "EMP002",
+        empCode: localStorage.getItem("emp_code")
       });
       if (response.status) {
         toast.success("Session Scheduled Successfully");
@@ -93,6 +93,7 @@ const Session = ({
         startTime: start.toISOString(),
         endTime: end.toISOString(),
         select_reason: reason,
+        empCode: localStorage.getItem('emp_code')
       });
       if (response.status) {
         toast.success("Session Edited Successfully");

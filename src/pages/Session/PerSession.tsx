@@ -83,7 +83,7 @@ const PerSessionPage = () => {
                 whiteSpace: "nowrap",
               }}
             >
-              {drcode}
+              {doctor.name}
             </Typography>
 
             <FiberManualRecordIcon
@@ -124,7 +124,7 @@ const PerSessionPage = () => {
           <Card heading={"Total Patient Reports"} value={totalRep} />
           <Card heading={"Total Rx Uploaded"} value={totalRep} />
         </Box>
-        <PatientTable patientList={patientList} View={"yes"} drcode={drcode} />
+        <PatientTable patientList={patientList} View={"yes"} drcode={drcode || doctor.name} />
       </div>
     </>
   );

@@ -55,11 +55,11 @@ const Home = () => {
       <div className="cards">
         <Card
           heading="Schedule/Target Sessions"
-          value={`${campaignsStats.scheduled_sessions}/30`}
+          value={`${campaignsStats.scheduled_sessions}/${campaignsStats.targeted_sessions}`}
         />
         <Card
           heading="Associated/Target Doctors"
-          value={`${campaignsStats.associated_doctor}/24`}
+          value={`${campaignsStats.associated_doctor}/${campaignsStats.targeted_doctors}`}
         />
         <Card
           heading="Sessions Completed"
