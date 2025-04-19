@@ -6,14 +6,43 @@ import {
     CardContent,
     CardMedia,
     Button,
-    Divider,
     Stack,
+    CircularProgress,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { GetPatientDetails } from "../../../api.js";
 
 const ViewPatientPage = () => {
+    const location = useLocation();
+    const patientCode = location?.state?.patientcode;
+    const [searchParams] = useSearchParams();
+//   const sessionid = location?.state?.sessionid;
+
+    const [patient, setPatient] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchDetails = async () => {
+            const data = await GetPatientDetails(patientCode);
+            setPatient(data?.patient);
+            setLoading(false);
+        };
+        if (patientCode) fetchDetails();
+    }, [patientCode]);
+
+    if (loading) {
+        return (
+            <Box p={4} display="flex" justifyContent="center">
+                <CircularProgress />
+            </Box>
+        );
+    }
+
     return (
         <Box p={4}>
             {/* Breadcrumb */}
@@ -21,9 +50,7 @@ const ViewPatientPage = () => {
                 <Typography fontWeight={600} fontSize="20px" color="#455A64">Dr. Shruti Sharma</Typography>
                 <Typography fontSize="20px" color="#455A64" fontWeight={600}>•</Typography>
                 <Typography fontSize="20px" color="#455A64" fontWeight={600}>Cardiologist</Typography>
-                <Typography fontSize="20px" color="#455A64" fontWeight={600}>
-                    <ChevronRightIcon fontSize="large" />
-                </Typography>
+                <ChevronRightIcon fontSize="large" />
                 <Typography fontSize="20px" color="#455A64" fontWeight={600}>Patient details</Typography>
             </Stack>
 
@@ -39,17 +66,22 @@ const ViewPatientPage = () => {
 
             {/* Patient Info Grid */}
             <Grid container spacing={8} mb={4}>
-                {[
-                    { label: "Patient Code", value: "32589742" },
-                    { label: "Patient name", value: "Dev Mehta" },
-                    { label: "Age", value: "32" },
-                    { label: "Gender", value: "Male" },
-                ].map((item, idx) => (
+                {[{
+                    label: "Patient Code", value: patientCode
+                }, {
+                    label: "Patient name", value: patient?.name
+                }, {
+                    label: "Age", value: patient?.age
+                }, {
+                    label: "Gender", value: patient?.gender
+                }].map((item, idx) => (
                     <Grid item xs={6} sm={3} key={idx}>
-                        <Typography variant="h2" fontSize={"15px"} fontWeight={400} color="#707179">
+                        <Typography fontSize={"15px"} color="#707179">
                             {item.label}
                         </Typography>
-                        <Typography variant="h1" fontSize={"18px"} fontWeight={500} color="#4E4E55">{item.value}</Typography>
+                        <Typography fontSize={"18px"} fontWeight={500} color="#4E4E55">
+                            {item.value}
+                        </Typography>
                     </Grid>
                 ))}
             </Grid>
@@ -58,34 +90,33 @@ const ViewPatientPage = () => {
             <Grid container spacing={3}>
                 {/* Prescription */}
                 <Grid item xs={12} md={6}>
-                    <Typography variant="h2" fontSize={"20px"} fontWeight={400} color="#707179" gutterBottom>
+                    <Typography fontSize={"20px"} color="#707179" gutterBottom>
                         Patient’s Prescription (Rx)
                     </Typography>
                     <Card
                         variant="outlined"
                         sx={{
-                            borderColor: "#F37957",
                             border: "2px solid #F37957",
                             borderRadius: "4px",
-                            height: "100%",
                             width: "500px",
-                            display: "flex",
-                            flexDirection: "column",
+                            height: "100%",
                         }}
                     >
                         <CardContent>
                             <CardMedia
                                 component="img"
                                 height="220"
-                                image="/placeholder/prescription.png" // Replace with actual URL
+                                image={patient?.prescription_img}
                                 alt="Prescription"
                                 sx={{ opacity: 0.4, objectFit: "contain" }}
                             />
                             <Box mt={2} display="flex" justifyContent="center">
                                 <Button
                                     variant="outlined"
-                                    sx={{ background: "#FCE7E3", color: "#F37957"}}
+                                    sx={{ background: "#FCE7E3", color: "#F37957" }}
                                     startIcon={<VisibilityIcon />}
+                                    href={patient?.prescription_img}
+                                    target="_blank"
                                 >
                                     View full Image
                                 </Button>
@@ -96,34 +127,32 @@ const ViewPatientPage = () => {
 
                 {/* Report */}
                 <Grid item xs={12} md={6}>
-                    <Typography  variant="h2" fontSize={"20px"} fontWeight={400} color="#707179" gutterBottom>
+                    <Typography fontSize={"20px"} color="#707179" gutterBottom>
                         Patient’s Report
                     </Typography>
                     <Card
                         variant="outlined"
                         sx={{
-                            borderColor: "#2B72E6",
                             border: "2px solid #2B72E6",
                             borderRadius: "4px",
-                            height: "100%",
                             width: "500px",
-                            display: "flex",
-                            flexDirection: "column",
+                            height: "100%",
                         }}
                     >
                         <CardContent>
                             <CardMedia
-                                component="img"
+                                component="iframe"
                                 height="220"
-                                image="/placeholder/report.png" // Replace with actual URL
-                                alt="Report"
-                                sx={{ opacity: 0.4, objectFit: "contain" }}
+                                src={patient?.report_img}
+                                sx={{ opacity: 0.4 }}
                             />
                             <Box mt={2} display="flex" justifyContent="center">
                                 <Button
                                     variant="outlined"
-                                    sx={{ color: "#2B72E6", background: "#78A5FE40"}}
+                                    sx={{ color: "#2B72E6", background: "#78A5FE40" }}
                                     startIcon={<VisibilityIcon />}
+                                    href={patient?.report_img}
+                                    target="_blank"
                                 >
                                     View full Image
                                 </Button>
@@ -135,7 +164,9 @@ const ViewPatientPage = () => {
 
             {/* Session Details Button */}
             <Box display="flex" justifyContent="flex-end" mt={8}>
-                <Button variant="contained" sx={{ background: '#2B72E6', color: 'white' }} size="large">
+                <Button
+                onClick={() => navigate(-1)} 
+                variant="contained" sx={{ background: '#2B72E6', color: 'white' }} size="large">
                     <ArrowBackIosIcon /> Session Details
                 </Button>
             </Box>
